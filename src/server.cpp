@@ -18,7 +18,7 @@ void Server::begin()
     }
     catch(const std::exception &e)
     {
-        std::cerr << "Erreur lors du démarrage du serveur"<< std::endl;
+        std::cerr << "Erreur lors du démarrage du serveur : "<<e.what()<< std::endl;
     }
 }
 
@@ -68,9 +68,26 @@ bool Server::_id_exits(int id){
     return found;
 }
 
+//Ceci reçois ce qu'un client valide envoie
+//Processus : 1-Reçois l'id du destinataire (celui qu'on veut envoyer le msg)
+//2 - Reçois le message à envoyé et l'envoie
 void Server::_valide_client_receive_handler(const std::string &data,int his_id)
 {
-    auto it = _list_of_sessions.begin();
+    auto it = _list_of_sessions.find(his_id);
     if(it != _list_of_sessions.end()) // on utilise les itérateurs pour se rassurer que la clé est valide , vu qu'on a pas de contructeur par défaut pour la classe
-       it->second.send_data(data);
+    {   
+       //it->second.send_data(data);
+       size_t pos = data.find(' ');
+       std::string first_part = data.substr(0, pos);
+       std::string second_part = data.substr(pos + 1);
+       int dest_id = std::stod(first_part);
+       auto dest_it = _list_of_sessions.find(dest_id);
+       if(dest_it == _list_of_sessions.end())//si le destinataire n'est pas connecté on quitte
+       {
+            it->second.send_data("Ce client n'est pas connecté\n");
+            return;
+       }
+        _dicussions_id[his_id] = dest_id;//on crée une discussion entre 2 client
+        dest_it->second.send_data(second_part);
+    }
 }

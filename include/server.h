@@ -24,6 +24,7 @@ class Server
         std::unique_ptr<Session> _work_session_ptr;//Session de travail utilisé pour acceuillir tout client
         std::vector<int> _lists_of_client_id;//Listes des ID des clients enregistrées
         void _valide_client_receive_handler(const std::string &data,int his_id);
+        std::unordered_map<int,int> _dicussions_id;
 };
 
 
