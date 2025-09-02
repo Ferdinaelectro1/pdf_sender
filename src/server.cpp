@@ -73,6 +73,7 @@ bool Server::_id_exits(int id){
 //2 - Reçois le message à envoyé et l'envoie
 void Server::_valide_client_receive_handler(const std::string &data,int his_id)
 {
+    std::cout << data.size() << std::endl;
     auto it = _list_of_sessions.find(his_id);
     if(it != _list_of_sessions.end()) // on utilise les itérateurs pour se rassurer que la clé est valide , vu qu'on a pas de contructeur par défaut pour la classe
     {   
