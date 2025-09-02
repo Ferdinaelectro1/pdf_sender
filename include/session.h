@@ -17,7 +17,7 @@ class Session
 
     private:
       tcp::socket _socket;
-      std::shared_ptr<std::array<char,1024>> _read_buffer;//buffer de lecture des données reçu
+      std::shared_ptr<std::array<char,102400>> _read_buffer;//buffer de lecture des données reçu
       std::function<void(const std::string &)> _server_receive_callback;//aller dans le cpp voir
       std::shared_ptr<std::string> _write_buffer;//buffer d'écriture des données
       void _do_read();

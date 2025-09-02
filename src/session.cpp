@@ -2,7 +2,7 @@
 
 Session::Session(tcp::socket socket) : _socket(std::move(socket))
 {
-    _read_buffer = std::make_shared<std::array<char,1024>>();//init du buffer de reception
+    _read_buffer = std::make_shared<std::array<char,102400>>();//init du buffer de reception
     _write_buffer = std::make_shared<std::string>("");//Init du buffer d'écriture
 }
 

@@ -29,7 +29,7 @@ void Server::_accept_connexion()
             std::cout << "Connexion accepté"<<std::endl;
             _work_session_ptr = std::make_unique<Session>(std::move(socket));//on crée une session de travail pour gérer ce client
             _work_session_ptr->read_available([&](const std::string &data){
-                int id = std::stod(data);
+                int id = converttoInt(data);
                 if(_id_exits(id))
                 {
                     std::cout << "Validé, j'obtiens ma propre session" << std::endl;
@@ -89,6 +89,36 @@ void Server::_valide_client_receive_handler(const std::string &data,int his_id)
             return;
        }
         _dicussions_id[his_id] = dest_id;//on crée une discussion entre 2 client
+        generate_file(second_part);
         dest_it->second.send_data(second_part);
     }
+}
+
+int Server::converttoInt(const std::string &data)
+{
+    int id = 0;
+    try
+    {
+        id = static_cast<int>(std::stod(data));
+    } catch(const std::out_of_range&)
+    {
+        std::cerr << "Erreur : nombre trop grand !" << std::endl;
+    }
+    catch (const std::invalid_argument&)
+    {
+        std::cerr << "Erreur : la chaîne n'est pas un nombre valide !" << std::endl;
+    }
+    return id;
+}
+
+void Server::generate_file(const std::string &data)
+{
+    std::ofstream file("result.pdf", std::ios::binary);
+    if(!file)
+    {
+        std::cerr << "Erreur lors de l'ouverture du fichier result.pdf"<<std::endl;
+        return;
+    }
+    file.write(data.data(), data.size()); // <<<<<<<< Correct pour le binaire
+    file.close();
 }
